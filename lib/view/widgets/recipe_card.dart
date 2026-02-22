@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../../models/recipe.dart';
+import '../layout/breakpoints.dart';
 
 class RecipeCard extends StatelessWidget {
     final Recipe recipe;
@@ -15,6 +17,8 @@ class RecipeCard extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
+        final isMobile = AppBreakpoints.isMobile(context);
+
         return Card(
             elevation: 1,
             child: ListTile(
@@ -28,16 +32,35 @@ class RecipeCard extends StatelessWidget {
                     children: [
                         Text(recipe.description),
                         const SizedBox(height: 4),
-                        Row(
+                        Wrap(
+                            spacing: 8,
+                            runSpacing: 4,
                             children: [
                                 _InfoChip(icon: Icons.schedule, label: '${recipe.minutes} min'),
-                                const SizedBox(width: 4),
                                 _InfoChip(icon: Icons.people, label: '${recipe.servings} servings'),
                             ],
                         ),
+                        if (isMobile)
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                    IconButton(
+                                        tooltip: 'Edit',
+                                        icon: const Icon(Icons.edit),
+                                        onPressed: () => {
+
+                                        },
+                                    ),
+                                    IconButton(
+                                        tooltip: 'Remove',
+                                        icon: const Icon(Icons.delete_outline),
+                                        onPressed: onDelete,
+                                    ),
+                                ],
+                            ),
                     ]
                 ),
-                trailing: Row(
+                trailing: !isMobile ? Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                         IconButton(
@@ -53,7 +76,7 @@ class RecipeCard extends StatelessWidget {
                             onPressed: onDelete,
                         ),
                     ],
-                ),
+                ) : null,
             ),
         );
     }
@@ -77,6 +100,7 @@ class _InfoChip extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                     Icon(icon, size: 16),
                     const SizedBox(width: 4),
