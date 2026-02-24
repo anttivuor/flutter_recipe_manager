@@ -6,6 +6,7 @@ class Recipe {
     int servings;
     List<String> ingredients;
     List<String> steps;
+    bool favorite;
     DateTime createdAt;
     DateTime updatedAt;
 
@@ -17,6 +18,7 @@ class Recipe {
         required this.servings,
         required this.ingredients,
         required this.steps,
+        required this.favorite,
         required this.createdAt,
         required this.updatedAt,
     });
@@ -29,6 +31,7 @@ class Recipe {
         'servings': servings,
         'ingredients': ingredients,
         'steps': steps,
+        'favorite': favorite,
         'createdAt': createdAt.toIso8601String(),
         'updatedAt': updatedAt.toIso8601String(),
     };
@@ -41,7 +44,32 @@ class Recipe {
         servings: (data['servings'] ?? 0) as int,
         ingredients: List<String>.from(data['ingredients'] ?? const []),
         steps: List<String>.from(data['steps'] ?? const []),
+        favorite: (data['favorite'] ?? false) as bool,
         createdAt: DateTime.parse(data['createdAt'] as String),
         updatedAt: DateTime.parse(data['updatedAt'] as String),
     );
+
+    Recipe copyWith({
+        String? id,
+        String? title,
+        String? description,
+        int? minutes,
+        int? servings,
+        List<String>? ingredients,
+        List<String>? steps,
+        bool? favorite,
+    }) {
+        return Recipe(
+            id: id ?? this.id,
+            title: title ?? this.title,
+            description: description ?? this.description,
+            minutes: minutes ?? this.minutes,
+            servings: servings ?? this.servings,
+            ingredients: ingredients ?? this.ingredients,
+            steps: steps ?? this.steps,
+            favorite: favorite ?? this.favorite,
+            createdAt: this.createdAt,
+            updatedAt: this.updatedAt,
+        );
+    }
 }

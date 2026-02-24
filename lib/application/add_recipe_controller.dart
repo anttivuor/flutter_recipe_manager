@@ -118,6 +118,7 @@ class AddRecipeFormController extends GetxController {
                 servings: values['servings'] as int,
                 ingredients: List<String>.from(ingredients),
                 steps: List<String>.from(steps),
+                favorite: false,
                 createdAt: now,
                 updatedAt: now,
             );

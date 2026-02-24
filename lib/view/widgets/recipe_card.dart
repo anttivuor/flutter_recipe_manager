@@ -5,14 +5,16 @@ import '../layout/breakpoints.dart';
 
 class RecipeCard extends StatelessWidget {
     final Recipe recipe;
-    final VoidCallback? onTap;
-    final VoidCallback? onDelete;
+    final VoidCallback onTap;
+    final VoidCallback onDelete;
+    final void Function(Recipe) onUpdate;
 
     const RecipeCard({
         super.key,
         required this.recipe,
-        this.onTap,
-        this.onDelete,
+        required this.onTap,
+        required this.onDelete,
+        required this.onUpdate,
     });
 
     @override
@@ -41,42 +43,10 @@ class RecipeCard extends StatelessWidget {
                             ],
                         ),
                         if (isMobile)
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                    IconButton(
-                                        tooltip: 'Edit',
-                                        icon: const Icon(Icons.edit),
-                                        onPressed: () => {
-
-                                        },
-                                    ),
-                                    IconButton(
-                                        tooltip: 'Remove',
-                                        icon: const Icon(Icons.delete_outline),
-                                        onPressed: onDelete,
-                                    ),
-                                ],
-                            ),
+                            _ActionButtons(recipe: recipe, onDelete: onDelete, onUpdate: onUpdate)
                     ]
                 ),
-                trailing: !isMobile ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                        IconButton(
-                            tooltip: 'Edit',
-                            icon: const Icon(Icons.edit),
-                            onPressed: () => {
-
-                            },
-                        ),
-                        IconButton(
-                            tooltip: 'Remove',
-                            icon: const Icon(Icons.delete_outline),
-                            onPressed: onDelete,
-                        ),
-                    ],
-                ) : null,
+                trailing: !isMobile ? _ActionButtons(recipe: recipe, onDelete: onDelete, onUpdate: onUpdate) : null,
             ),
         );
     }
@@ -107,6 +77,46 @@ class _InfoChip extends StatelessWidget {
                     Text(label),
                 ],
             ),
+        );
+    }
+}
+
+class _ActionButtons extends StatelessWidget {
+    final Recipe recipe;
+    final VoidCallback onDelete;
+    final void Function(Recipe) onUpdate;
+
+    const _ActionButtons({
+        required this.recipe,
+        required this.onDelete,
+        required this.onUpdate,
+    });
+
+    @override
+    Widget build(BuildContext context) {
+        return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+                IconButton(
+                    tooltip: recipe.favorite ? 'Remove from favorites' : 'Add to favorites',
+                    icon: recipe.favorite ? const Icon(Icons.favorite) : const Icon(Icons.favorite_border),
+                    onPressed: () {
+                        onUpdate(recipe.copyWith(favorite: !recipe.favorite));
+                    },
+                ),
+                IconButton(
+                    tooltip: 'Edit',
+                    icon: const Icon(Icons.edit),
+                    onPressed: () => {
+
+                    },
+                ),
+                IconButton(
+                    tooltip: 'Remove',
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: onDelete,
+                ),
+            ]
         );
     }
 }

@@ -5,6 +5,7 @@ import '../layout/responsive_scaffold_with_menu.dart';
 import '../widgets/recipe_card.dart';
 import '../../application/recipe_controller.dart';
 import '../layout/breakpoints.dart';
+import '../../models/recipe.dart';
 
 class RecipeListScreen extends StatelessWidget {
     final controller = Get.find<RecipeController>();
@@ -46,6 +47,9 @@ class RecipeListScreen extends StatelessWidget {
                             },
                             onDelete: () {
                                 controller.deleteRecipe(recipe.id);
+                            },
+                            onUpdate: (Recipe updatedRecipe) {
+                                controller.updateRecipe(updatedRecipe);
                             },
                         );
                     },
