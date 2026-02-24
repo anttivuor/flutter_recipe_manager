@@ -35,6 +35,21 @@ class RecipeController extends GetxController {
         return recipes.where(matches).toList();
     }
 
+    List<Recipe> get filteredFavorites {
+        final q = searchQuery.value.trim().toLowerCase();
+
+        bool matches(Recipe r) {
+            if (q.isEmpty) {
+                return r.favorite == true;
+            }
+            final title = r.title.toLowerCase();
+            final desc = r.description.toLowerCase();
+            return (title.contains(q) || desc.contains(q)) && r.favorite == true;
+        }
+
+        return recipes.where(matches).toList();
+    }
+
     Future<void> addRecipe(Recipe recipe) async {
         await service.upsert(recipe);
         recipes.insert(0, recipe);
