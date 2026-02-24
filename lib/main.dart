@@ -10,6 +10,15 @@ import './view/screens/recipe_list_screen.dart';
 import './view/screens/favorites_list_screen.dart';
 import './view/screens/stats_screen.dart';
 import './view/screens/add_recipe_screen.dart';
+import './view/screens/edit_recipe_screen.dart';
+
+class AppBinding extends Bindings {
+    @override
+    void dependencies() {
+        Get.put<RecipeService>(RecipeService(), permanent: true);
+        Get.put<RecipeController>(RecipeController(), permanent: true);
+    }
+}
 
 Future<void> main() async {
     await Hive.initFlutter();
@@ -17,11 +26,9 @@ Future<void> main() async {
 
     await addMockRecipesIfEmpty();
 
-    Get.lazyPut<RecipeController>(() => RecipeController(), fenix: true);
-    Get.lazyPut<RecipeService>(() => RecipeService(), fenix: true);
-
     runApp(
         GetMaterialApp(
+            initialBinding: AppBinding(),
             initialRoute: "/",
             getPages: [
                 GetPage(
@@ -44,7 +51,7 @@ Future<void> main() async {
                 ),
                 GetPage(
                     name: "/recipes/:id/edit",
-                    page: () => RecipeListScreen(),
+                    page: () => EditRecipeScreen(),
                 ),
                 GetPage(
                     name: "/stats",

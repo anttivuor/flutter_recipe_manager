@@ -56,15 +56,17 @@ class RecipeController extends GetxController {
     }
 
     Future<void> updateRecipe(Recipe recipe) async {
-        recipe.updatedAt = DateTime.now();
-        await service.upsert(recipe);
+        final updated = recipe.copyWith(
+            updatedAt: DateTime.now(),
+        );
+        await service.upsert(updated);
 
-        final idx = recipes.indexWhere((r) => r.id == recipe.id);
+        final idx = recipes.indexWhere((r) => r.id == updated.id);
         if (idx != -1) {
-            recipes[idx] = recipe;
+            recipes[idx] = updated;
+            // refresh is optional when replacing, but harmless
             recipes.refresh();
         } else {
-            // if it wasn't loaded for some reason
             loadRecipes();
         }
     }

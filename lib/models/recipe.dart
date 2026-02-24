@@ -58,6 +58,7 @@ class Recipe {
         List<String>? ingredients,
         List<String>? steps,
         bool? favorite,
+        DateTime? updatedAt,
     }) {
         return Recipe(
             id: id ?? this.id,
@@ -69,7 +70,7 @@ class Recipe {
             steps: steps ?? this.steps,
             favorite: favorite ?? this.favorite,
             createdAt: this.createdAt,
-            updatedAt: this.updatedAt,
+            updatedAt: updatedAt ?? this.updatedAt,
         );
     }
 }

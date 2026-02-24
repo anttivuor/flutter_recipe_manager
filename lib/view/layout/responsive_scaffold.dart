@@ -40,7 +40,7 @@ class ResponsiveScaffold extends StatelessWidget {
                                 minWidth: c.maxWidth < maxWidth ? c.maxWidth : maxWidth,
                             ),
                             child: Padding(
-                                padding: const EdgeInsets.all(12),
+                                padding: const EdgeInsets.only(left: 12, right: 12),
                                 child: child,
                             ),
                         ),

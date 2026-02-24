@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../models/recipe.dart';
 import '../layout/breakpoints.dart';
@@ -107,8 +108,8 @@ class _ActionButtons extends StatelessWidget {
                 IconButton(
                     tooltip: 'Edit',
                     icon: const Icon(Icons.edit),
-                    onPressed: () => {
-
+                    onPressed: () {
+                        Get.toNamed('/recipes/${recipe.id}/edit');
                     },
                 ),
                 IconButton(

@@ -5,36 +5,52 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 
 import '../layout/responsive_scaffold.dart';
 import '../widgets/chip_input.dart';
+import '../../models/recipe.dart';
 import '../../application/recipe_form_controller.dart';
+import '../../application/recipe_controller.dart';
 
-class AddRecipeScreen extends StatefulWidget {
-    const AddRecipeScreen({super.key});
+class EditRecipeScreen extends StatefulWidget {
+    const EditRecipeScreen({super.key});
 
     @override
-    State<AddRecipeScreen> createState() => _AddRecipeScreenState();
+    State<EditRecipeScreen> createState() => _EditRecipeScreenState();
 }
 
-class _AddRecipeScreenState extends State<AddRecipeScreen> {
-    late final RecipeFormController controller;
+class _EditRecipeScreenState extends State<EditRecipeScreen> {
+    late final String id = Get.parameters['id']!;
+    final recipeController = Get.find<RecipeController>();
+    late final RecipeFormController formController;
 
     @override
     void initState() {
         super.initState();
-        controller = Get.put(RecipeFormController());
+        final recipe = recipeController.findLocalById(id);
+        if (recipe == null) return;
+
+        formController = Get.put(
+            RecipeFormController(initialRecipe: recipe),
+            tag: id,
+        );
     }
 
     @override
     void dispose() {
-        Get.delete<RecipeFormController>(force: true);
+        Get.delete<RecipeFormController>(tag: id, force: true);
         super.dispose();
     }
 
     @override
     Widget build(BuildContext context) {
+        final recipe = recipeController.findLocalById(id);
+        if (recipe == null) {
+            return const Scaffold(body: Center(child: Text('Recipe not found')));
+        }
+
         return ResponsiveScaffold(
-            title: 'Add new recipe',
+            title: 'Edit recipe',
             child: FormBuilder(
-                key: controller.formKey,
+                key: formController.formKey,
+                initialValue: formController.initialFormValue,
                 child: ListView(
                     children: [
                         const SizedBox(height: 12),
@@ -43,6 +59,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                             decoration: const InputDecoration(
                                 labelText: 'Title *',
                                 border: OutlineInputBorder(),
+
                             ),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             textInputAction: TextInputAction.next,
@@ -93,9 +110,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                                         ]),
                                     ),
                                 ),
-
                                 const SizedBox(width: 12),
-
                                 Expanded(
                                     child: FormBuilderTextField(
                                         name: 'servings',
@@ -119,40 +134,38 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
 
                         const SizedBox(height: 12),
 
-                        // Ingredients
                         Obx(() => ChipInput(
                             title: 'Ingredients *',
                             type: 'ingredients',
                             hintText: 'e.g. 2 eggs, 200g flour',
-                            controller: controller.ingredientCtrl,
-                            chips: controller.ingredients.toList(),
-                            onAdd: controller.addIngredient,
-                            onRemove: controller.removeIngredient,
-                            onReorder: controller.reorderIngredients,
-                            errorText: controller.ingredientsError.value,
+                            controller: formController.ingredientCtrl,
+                            chips: formController.ingredients.toList(),
+                            onAdd: formController.addIngredient,
+                            onRemove: formController.removeIngredient,
+                            onReorder: formController.reorderIngredients,
+                            errorText: formController.ingredientsError.value,
                         )),
 
                         const SizedBox(height: 12),
 
-                        // Steps
                         Obx(() => ChipInput(
                             title: 'Steps *',
                             type: 'steps',
                             hintText: 'e.g. Mix ingredients',
-                            controller: controller.stepCtrl,
-                            chips: controller.steps.toList(),
-                            onAdd: controller.addStep,
-                            onRemove: controller.removeStep,
-                            onReorder: controller.reorderSteps,
-                            errorText: controller.stepsError.value,
+                            controller: formController.stepCtrl,
+                            chips: formController.steps.toList(),
+                            onAdd: formController.addStep,
+                            onRemove: formController.removeStep,
+                            onReorder: formController.reorderSteps,
+                            errorText: formController.stepsError.value,
                         )),
 
                         const SizedBox(height: 24),
 
                         Obx(() => OutlinedButton.icon(
-                            onPressed: controller.isSaving.value ? null : controller.submit,
+                            onPressed: formController.isSaving.value ? null : formController.submit,
                             icon: const Icon(Icons.save),
-                            label: Text(controller.isSaving.value ? 'Saving…' : 'Save recipe'),
+                            label: Text(formController.isSaving.value ? 'Saving…' : 'Save changes'),
                         )),
 
                         const SizedBox(height: 12),
