@@ -46,60 +46,62 @@ class ResponsiveScaffoldWithMenu extends StatelessWidget {
 
         return LayoutBuilder(
             builder: (context, c) {
-                const maxWidth = 1100.0;
+                const maxWidth = 1000.0;
 
                 Widget content = Center(
-                    child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxWidth: maxWidth,
-                            minWidth: c.maxWidth < maxWidth ? c.maxWidth : maxWidth,
-                        ),
-                        child: Column(
-                            children: [
-                                AppBar(title: Text(title), actions: actions),
-                                Expanded(child: child),
-                            ],
-                        ),
+                    child: Column(
+                        children: [
+                            AppBar(title: Text(title), actions: actions),
+                            Expanded(child: child),
+                        ],
                     ),
                 );
 
                 if (!isMobile) {
-                    content = Row(
-                        children: [
-                            NavigationRail(
-                                selectedIndex: selectedIndex,
-                                onDestinationSelected: _navigateForIndex,
-                                labelType: isDesktop
-                                    ? NavigationRailLabelType.none
-                                    : NavigationRailLabelType.all,
-                                extended: isDesktop,
-                                leading: isDesktop ? Padding(
-                                    padding: EdgeInsets.all(16.0),
-                                    child: Text(
-                                        "Menu",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                        ),
+                    content = Center(
+                        child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                                maxWidth: maxWidth,
+                                minWidth: c.maxWidth < maxWidth ? c.maxWidth : maxWidth,
+                            ),
+                            child: Row(
+                                children: [
+                                    NavigationRail(
+                                        selectedIndex: selectedIndex,
+                                        onDestinationSelected: _navigateForIndex,
+                                        labelType: isDesktop
+                                            ? NavigationRailLabelType.none
+                                            : NavigationRailLabelType.all,
+                                        extended: isDesktop,
+                                        leading: isDesktop ? Padding(
+                                            padding: EdgeInsets.all(16.0),
+                                            child: Text(
+                                                "Menu",
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                ),
+                                            ),
+                                        ) : null,
+                                        destinations: const [
+                                            NavigationRailDestination(
+                                                icon: Icon(Icons.fastfood),
+                                                label: Text('Recipes'),
+                                            ),
+                                            NavigationRailDestination(
+                                                icon: Icon(Icons.favorite),
+                                                label: Text('Favorites'),
+                                            ),
+                                            NavigationRailDestination(
+                                                icon: Icon(Icons.query_stats),
+                                                label: Text('Statistics'),
+                                            ),
+                                        ],
                                     ),
-                                ) : null,
-                                destinations: const [
-                                    NavigationRailDestination(
-                                        icon: Icon(Icons.fastfood),
-                                        label: Text('Recipes'),
-                                    ),
-                                    NavigationRailDestination(
-                                        icon: Icon(Icons.favorite),
-                                        label: Text('Favorites'),
-                                    ),
-                                    NavigationRailDestination(
-                                        icon: Icon(Icons.query_stats),
-                                        label: Text('Statistics'),
-                                    ),
+                                    const VerticalDivider(width: 1),
+                                    Expanded(child: content),
                                 ],
                             ),
-                            const VerticalDivider(width: 1),
-                            Expanded(child: content),
-                        ],
+                        ),
                     );
                 }
 
