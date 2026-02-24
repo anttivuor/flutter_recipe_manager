@@ -11,6 +11,7 @@ import './view/screens/favorites_list_screen.dart';
 import './view/screens/stats_screen.dart';
 import './view/screens/add_recipe_screen.dart';
 import './view/screens/edit_recipe_screen.dart';
+import './view/screens/view_recipe_screen.dart';
 
 class AppBinding extends Bindings {
     @override
@@ -47,7 +48,7 @@ Future<void> main() async {
                 ),
                 GetPage(
                     name: "/recipes/:id",
-                    page: () => AddRecipeScreen(),
+                    page: () => ViewRecipeScreen(),
                 ),
                 GetPage(
                     name: "/recipes/:id/edit",

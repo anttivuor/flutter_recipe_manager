@@ -58,7 +58,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                         FormBuilderTextField(
                             name: 'description',
                             decoration: const InputDecoration(
-                                labelText: 'Description',
+                                labelText: 'Description *',
                                 border: OutlineInputBorder(),
                             ),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -66,6 +66,8 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                             maxLines: 5,
                             textInputAction: TextInputAction.next,
                             validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(),
+                                FormBuilderValidators.minLength(2),
                                 FormBuilderValidators.maxLength(500),
                             ]),
                         ),

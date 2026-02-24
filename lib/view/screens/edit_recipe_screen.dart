@@ -43,7 +43,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     Widget build(BuildContext context) {
         final recipe = recipeController.findLocalById(id);
         if (recipe == null) {
-            return const Scaffold(body: Center(child: Text('Recipe not found')));
+            return const ResponsiveScaffold(title: 'Not found', child: Center(child: Text('Recipe not found')));
         }
 
         return ResponsiveScaffold(
@@ -75,7 +75,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                         FormBuilderTextField(
                             name: 'description',
                             decoration: const InputDecoration(
-                                labelText: 'Description',
+                                labelText: 'Description *',
                                 border: OutlineInputBorder(),
                             ),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -83,6 +83,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                             maxLines: 5,
                             textInputAction: TextInputAction.next,
                             validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(),
+                                FormBuilderValidators.minLength(2),
                                 FormBuilderValidators.maxLength(500),
                             ]),
                         ),

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../models/recipe.dart';
 import '../layout/breakpoints.dart';
+import '../widgets/info_chip.dart';
 
 class RecipeCard extends StatelessWidget {
     final Recipe recipe;
@@ -39,8 +40,8 @@ class RecipeCard extends StatelessWidget {
                             spacing: 8,
                             runSpacing: 4,
                             children: [
-                                _InfoChip(icon: Icons.schedule, label: '${recipe.minutes} min'),
-                                _InfoChip(icon: Icons.people, label: '${recipe.servings} servings'),
+                                InfoChip(icon: Icons.schedule, label: '${recipe.minutes} min'),
+                                InfoChip(icon: Icons.people, label: '${recipe.servings} servings'),
                             ],
                         ),
                         if (isMobile)
@@ -48,35 +49,6 @@ class RecipeCard extends StatelessWidget {
                     ]
                 ),
                 trailing: !isMobile ? _ActionButtons(recipe: recipe, onDelete: onDelete, onUpdate: onUpdate) : null,
-            ),
-        );
-    }
-}
-
-class _InfoChip extends StatelessWidget {
-    final IconData icon;
-    final String label;
-
-    const _InfoChip({
-        required this.icon,
-        required this.label,
-    });
-
-    @override
-    Widget build(BuildContext context) {
-        return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                    Icon(icon, size: 16),
-                    const SizedBox(width: 4),
-                    Text(label),
-                ],
             ),
         );
     }
@@ -115,7 +87,29 @@ class _ActionButtons extends StatelessWidget {
                 IconButton(
                     tooltip: 'Remove',
                     icon: const Icon(Icons.delete_outline),
-                    onPressed: onDelete,
+                    onPressed: () async {
+                        final ok = await showDialog<bool>(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                                title: const Text('Delete recipe?'),
+                                content: const Text('This cannot be undone.'),
+                                actions: [
+                                    TextButton(
+                                        onPressed: () => Navigator.pop(context, false),
+                                        child: const Text('Cancel'),
+                                    ),
+                                    FilledButton(
+                                        onPressed: () => Navigator.pop(context, true),
+                                        child: const Text('Delete'),
+                                    ),
+                                ],
+                            ),
+                        );
+
+                        if (ok == true) {
+                            onDelete();
+                        }
+                    },
                 ),
             ]
         );
