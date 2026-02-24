@@ -1,4 +1,4 @@
-name: Recipe to Github pages
+name: Deploy Flutter Web to GitHub Pages
 
 on:
   push:
