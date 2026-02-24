@@ -9,6 +9,7 @@ class Recipe {
     bool favorite;
     DateTime createdAt;
     DateTime updatedAt;
+    final int views;
 
     Recipe({
         required this.id,
@@ -21,6 +22,7 @@ class Recipe {
         required this.favorite,
         required this.createdAt,
         required this.updatedAt,
+        this.views = 0,
     });
 
     Map<String, dynamic> toJson() => {
@@ -34,6 +36,7 @@ class Recipe {
         'favorite': favorite,
         'createdAt': createdAt.toIso8601String(),
         'updatedAt': updatedAt.toIso8601String(),
+        'views': views,
     };
 
     static Recipe fromJson(Map data) => Recipe(
@@ -47,6 +50,7 @@ class Recipe {
         favorite: (data['favorite'] ?? false) as bool,
         createdAt: DateTime.parse(data['createdAt'] as String),
         updatedAt: DateTime.parse(data['updatedAt'] as String),
+        views: (data['views'] ?? 0) as int,
     );
 
     Recipe copyWith({
@@ -59,6 +63,7 @@ class Recipe {
         List<String>? steps,
         bool? favorite,
         DateTime? updatedAt,
+        int? views,
     }) {
         return Recipe(
             id: id ?? this.id,
@@ -71,6 +76,7 @@ class Recipe {
             favorite: favorite ?? this.favorite,
             createdAt: this.createdAt,
             updatedAt: updatedAt ?? this.updatedAt,
+            views: views ?? this.views,
         );
     }
 }

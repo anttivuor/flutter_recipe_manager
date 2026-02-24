@@ -80,4 +80,19 @@ class RecipeController extends GetxController {
         final idx = recipes.indexWhere((r) => r.id == id);
         return idx == -1 ? null : recipes[idx];
     }
+
+    Future<void> incrementViews(String id) async {
+        final idx = recipes.indexWhere((r) => r.id == id);
+        if (idx == -1) return;
+
+        final current = recipes[idx];
+        final updated = current.copyWith(
+            views: current.views + 1,
+            updatedAt: DateTime.now(),
+        );
+
+        await service.upsert(updated);
+        recipes[idx] = updated;
+        recipes.refresh();
+    }
 }

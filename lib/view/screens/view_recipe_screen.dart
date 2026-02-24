@@ -7,10 +7,25 @@ import '../../application/recipe_controller.dart';
 import '../../models/recipe.dart';
 import '../widgets/info_chip.dart';
 
-class ViewRecipeScreen extends StatelessWidget {
-    ViewRecipeScreen({super.key});
+class ViewRecipeScreen extends StatefulWidget {
+    const ViewRecipeScreen({super.key});
 
-    final RecipeController controller = Get.find<RecipeController>();
+    @override
+    State<ViewRecipeScreen> createState() => _ViewRecipeScreenState();
+}
+
+class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
+    final controller = Get.find<RecipeController>();
+    late final String id = Get.parameters['id']!;
+
+    @override
+    void initState() {
+        super.initState();
+        // run after first frame so it doesn't run during build
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+            controller.incrementViews(id);
+        });
+    }
 
     @override
     Widget build(BuildContext context) {
