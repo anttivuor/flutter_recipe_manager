@@ -7,8 +7,22 @@ import '../../application/recipe_controller.dart';
 import '../layout/breakpoints.dart';
 import '../../models/recipe.dart';
 
-class RecipeListScreen extends StatelessWidget {
+class RecipeListScreen extends StatefulWidget {
+    const RecipeListScreen({super.key});
+
+    @override
+    State<RecipeListScreen> createState() => _RecipeListScreenState();
+}
+
+class _RecipeListScreenState extends State<RecipeListScreen> {
     final controller = Get.find<RecipeController>();
+    final searchController = TextEditingController();
+
+    @override
+    void dispose() {
+        searchController.dispose();
+        super.dispose();
+    }
 
     @override
     Widget build(BuildContext context) {
@@ -19,42 +33,71 @@ class RecipeListScreen extends StatelessWidget {
             title: 'Recipes',
             actions: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     child: FilledButton.icon(
-                        onPressed: () {
-                            Get.toNamed('/recipes/new');
-                        },
+                        onPressed: () => Get.toNamed('/recipes/new'),
                         icon: const Icon(Icons.add, size: 18),
-                        label: Text(isMobile ? "New" : isTablet ? "New recipe" :  "Add new recipe"),
+                        label: Text(isMobile ? "New" : isTablet ? "New recipe" : "Add new recipe"),
                     ),
                 ),
             ],
-            child: Obx(() {
-                if (controller.recipes.isEmpty) {
-                    return Text('No recipes yet');
-                }
-                return ListView.separated(
-                    itemCount: controller.recipes.length,
-                    padding: EdgeInsets.only(right: 10, left: 10),
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                        final recipe = controller.recipes[index];
+            child: Column(
+                children: [
+                    Padding(
+                        padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+                        child: TextField(
+                            controller: searchController,
+                            onChanged: controller.setSearchQuery,
+                            decoration: InputDecoration(
+                                hintText: 'Search recipes...',
+                                prefixIcon: const Icon(Icons.search),
+                                suffixIcon: Obx(() {
+                                    if (controller.searchQuery.value.isEmpty) return const SizedBox.shrink();
+                                    return IconButton(
+                                        tooltip: 'Clear',
+                                        icon: const Icon(Icons.clear),
+                                        onPressed: () {
+                                            searchController.clear();
+                                            controller.setSearchQuery('');
+                                        },
+                                    );
+                                }),
+                                border: const OutlineInputBorder(),
+                            ),
+                        ),
+                    ),
+                    const SizedBox(height: 10),
+                    Expanded(
+                        child: Obx(() {
+                            final shown = controller.filteredRecipes;
 
-                        return RecipeCard(
-                            recipe: recipe,
-                            onTap: () {
-                                Get.toNamed('/recipes/${recipe.id}');
-                            },
-                            onDelete: () {
-                                controller.deleteRecipe(recipe.id);
-                            },
-                            onUpdate: (Recipe updatedRecipe) {
-                                controller.updateRecipe(updatedRecipe);
-                            },
-                        );
-                    },
-                );
-            }),
+                            if (controller.recipes.isEmpty) {
+                                return const Center(child: Text('No recipes yet'));
+                            }
+
+                            if (shown.isEmpty) {
+                                return const Center(child: Text('No matches'));
+                            }
+
+                            return ListView.separated(
+                                itemCount: shown.length,
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                                itemBuilder: (context, index) {
+                                    final recipe = shown[index];
+
+                                    return RecipeCard(
+                                        recipe: recipe,
+                                        onTap: () => Get.toNamed('/recipes/${recipe.id}'),
+                                        onDelete: () => controller.deleteRecipe(recipe.id),
+                                        onUpdate: controller.updateRecipe,
+                                    );
+                                },
+                            );
+                        }),
+                    ),
+                ],
+            ),
         );
     }
 }

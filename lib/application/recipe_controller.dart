@@ -6,6 +6,7 @@ class RecipeController extends GetxController {
     final RecipeService service = Get.find<RecipeService>();
 
     final recipes = <Recipe>[].obs;
+    final searchQuery = ''.obs;
 
     @override
     void onInit() {
@@ -15,6 +16,23 @@ class RecipeController extends GetxController {
 
     void loadRecipes() {
         recipes.assignAll(service.getAll());
+    }
+
+    void setSearchQuery(String value) {
+        searchQuery.value = value;
+    }
+
+    List<Recipe> get filteredRecipes {
+        final q = searchQuery.value.trim().toLowerCase();
+        if (q.isEmpty) return recipes;
+
+        bool matches(Recipe r) {
+            final title = r.title.toLowerCase();
+            final desc = r.description.toLowerCase();
+            return title.contains(q) || desc.contains(q);
+        }
+
+        return recipes.where(matches).toList();
     }
 
     Future<void> addRecipe(Recipe recipe) async {
